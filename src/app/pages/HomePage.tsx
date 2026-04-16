@@ -17,7 +17,11 @@ import { LoadingScreen } from "../components/LoadingScreen";
 import { QuickSettings } from "../components/QuickSettings";
 import { Switch } from "../components/ui/switch";
 import { useDemoAppContext } from "../context/DemoAppContext";
-import { demandZones, homeOpportunities, homeRequiredActions } from "../lib/demo-data";
+import {
+  demandZones,
+  homeOpportunities,
+  homeRequiredActions,
+} from "../lib/demo-data";
 import { formatCurrency, getFirstName, getGreeting } from "../lib/formatters";
 import {
   brandGradientClassName,
@@ -45,13 +49,8 @@ const opportunityAccentMap = {
 
 export function HomePage() {
   const navigate = useNavigate();
-  const {
-    activeDriver,
-    isOnline,
-    setIsOnline,
-    unreadCount,
-    avoidTrafficMode,
-  } = useDemoAppContext();
+  const { activeDriver, isOnline, setIsOnline, unreadCount, avoidTrafficMode } =
+    useDemoAppContext();
   const [showLoading, setShowLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const timeoutRef = useRef<number | null>(null);
@@ -109,20 +108,20 @@ export function HomePage() {
         header={
           <div className={`${surfaceCardClassName} overflow-hidden`}>
             <div
-              className={`relative overflow-hidden rounded-[30px] p-6 text-white ${brandGradientClassName}`}
+              className={`relative overflow-hidden rounded-[30px] p-6 text-white lg:p-8 ${brandGradientClassName}`}
             >
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.24),_transparent_36%)]" />
               <div className="absolute -bottom-12 right-0 size-32 rounded-full bg-white/12 blur-3xl" />
 
-              <div className="relative flex items-start justify-between gap-4">
+              <div className="relative flex items-start justify-between gap-4 lg:items-center">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/65">
                     Driver assistant
                   </p>
-                  <h1 className="mt-3 text-[30px] font-semibold leading-tight">
+                  <h1 className="mt-3 text-[30px] font-semibold leading-tight lg:max-w-xl lg:text-[38px]">
                     {greeting}, {firstName}
                   </h1>
-                  <p className="mt-2 text-sm leading-6 text-white/80">
+                  <p className="mt-2 text-sm leading-6 text-white/80 lg:max-w-2xl lg:text-base">
                     {activeDriver.city} shift guide with SURG-backed hotspot
                     recommendations.
                   </p>
@@ -151,8 +150,8 @@ export function HomePage() {
                 </div>
               </div>
 
-              <div className="relative mt-6 rounded-[24px] border border-white/15 bg-white/10 p-4 backdrop-blur-md">
-                <div className="flex items-center justify-between gap-4">
+              <div className="relative mt-6 rounded-[24px] border border-white/15 bg-white/10 p-4 backdrop-blur-md lg:mt-8 lg:p-5">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/60">
                       Driver status
@@ -186,14 +185,14 @@ export function HomePage() {
             </div>
           </div>
         }
-        contentClassName="space-y-4"
+        contentClassName="space-y-4 lg:grid lg:grid-cols-12 lg:gap-6 lg:space-y-0"
       >
         <motion.section
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`${surfaceCardClassName} overflow-hidden p-3`}
+          className={`${surfaceCardClassName} overflow-hidden p-3 lg:col-span-8 lg:p-4`}
         >
-          <div className="relative h-[300px] overflow-hidden rounded-[24px] bg-[linear-gradient(180deg,#eef5ff_0%,#dff4f0_100%)] p-4">
+          <div className="relative h-[300px] overflow-hidden rounded-[24px] bg-[linear-gradient(180deg,#eef5ff_0%,#dff4f0_100%)] p-4 lg:h-[430px] lg:p-5 xl:h-[470px]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_28%,_rgba(59,130,246,0.12),_transparent_24%),radial-gradient(circle_at_78%_72%,_rgba(16,185,129,0.14),_transparent_26%)]" />
             <div className="absolute inset-x-8 top-[28%] h-px bg-slate-300/80" />
             <div className="absolute inset-x-12 top-[58%] h-px bg-slate-300/65" />
@@ -241,7 +240,7 @@ export function HomePage() {
             </div>
 
             <div className="relative flex items-start justify-between gap-3">
-              <div className="rounded-[18px] border border-white/80 bg-white/85 px-4 py-3 shadow-sm backdrop-blur">
+              <div className="rounded-[18px] border border-white/80 bg-white/85 px-4 py-3 shadow-sm backdrop-blur lg:max-w-sm lg:px-5 lg:py-4">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
                   Live location
                 </p>
@@ -287,8 +286,8 @@ export function HomePage() {
               </div>
             </div>
 
-            <div className="absolute bottom-4 left-4 right-4 rounded-[22px] border border-slate-200/70 bg-white/90 p-4 shadow-[0_16px_35px_-28px_rgba(15,23,42,0.35)] backdrop-blur">
-              <div className="flex items-center justify-between gap-3">
+            <div className="absolute bottom-4 left-4 right-4 rounded-[22px] border border-slate-200/70 bg-white/90 p-4 shadow-[0_16px_35px_-28px_rgba(15,23,42,0.35)] backdrop-blur lg:left-5 lg:right-auto lg:w-[min(28rem,calc(100%-2.5rem))] lg:p-5">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                     Suggested hotspot
@@ -297,7 +296,7 @@ export function HomePage() {
                     {topZone.name}
                   </h2>
                   <p className="mt-1 text-sm text-slate-500">
-                    {formatCurrency(topZone.earningsPerHour)} per hour •{" "}
+                    {formatCurrency(topZone.earningsPerHour)} per hour and{" "}
                     {topZone.waitTimeLabel}
                   </p>
                 </div>
@@ -312,7 +311,7 @@ export function HomePage() {
           </div>
         </motion.section>
 
-        <div className="grid gap-4">
+        <div className="grid gap-4 lg:col-span-4 lg:content-start">
           <motion.section
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -393,7 +392,7 @@ export function HomePage() {
         <motion.button
           whileTap={{ scale: 0.99 }}
           onClick={() => navigate("/surg")}
-          className={`block w-full overflow-hidden rounded-[30px] p-6 text-left text-white shadow-[0_30px_60px_-34px_rgba(37,99,235,0.65)] ${brandGradientClassName}`}
+          className={`block w-full overflow-hidden rounded-[30px] p-6 text-left text-white shadow-[0_30px_60px_-34px_rgba(37,99,235,0.65)] lg:col-span-5 lg:h-full lg:p-7 xl:col-span-4 ${brandGradientClassName}`}
         >
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -404,7 +403,7 @@ export function HomePage() {
               <h2 className="mt-4 text-2xl font-semibold">
                 SURG wants you in {topZone.name}
               </h2>
-              <p className="mt-2 max-w-[28ch] text-sm leading-6 text-white/80">
+              <p className="mt-2 max-w-[28ch] text-sm leading-6 text-white/80 lg:max-w-sm">
                 {formatCurrency(topZone.earningsPerHour)} per hour forecast,{" "}
                 {topZone.waitTimeLabel}, and{" "}
                 {avoidTrafficMode ? "traffic-aware" : "fastest"} routing.
@@ -416,7 +415,7 @@ export function HomePage() {
           </div>
         </motion.button>
 
-        <section className="space-y-3">
+        <section className="space-y-3 lg:col-span-7 xl:col-span-8">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
@@ -434,40 +433,44 @@ export function HomePage() {
             </button>
           </div>
 
-          {homeOpportunities.map((opportunity, index) => {
-            const accent = opportunityAccentMap[opportunity.accent];
+          <div className="grid gap-3 xl:grid-cols-3">
+            {homeOpportunities.map((opportunity, index) => {
+              const accent = opportunityAccentMap[opportunity.accent];
 
-            return (
-              <motion.div
-                key={opportunity.id}
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.12 + index * 0.06 }}
-                className={`flex items-start gap-4 rounded-[26px] border p-5 shadow-[0_18px_40px_-36px_rgba(15,23,42,0.28)] ${accent.panel}`}
-              >
-                <div className={`rounded-[18px] p-3 ${accent.icon}`}>
-                  {opportunity.accent === "amber" ? (
-                    <Sparkles className="size-5" />
-                  ) : opportunity.accent === "blue" ? (
-                    <Zap className="size-5" />
-                  ) : (
-                    <TrendingUp className="size-5" />
-                  )}
-                </div>
-                <div className="flex-1">
-                  <p className={`text-xs font-semibold uppercase tracking-[0.22em] ${accent.eyebrow}`}>
-                    {opportunity.stat}
-                  </p>
-                  <h3 className="mt-2 text-base font-semibold text-slate-950">
-                    {opportunity.title}
-                  </h3>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">
-                    {opportunity.description}
-                  </p>
-                </div>
-              </motion.div>
-            );
-          })}
+              return (
+                <motion.div
+                  key={opportunity.id}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.12 + index * 0.06 }}
+                  className={`flex items-start gap-4 rounded-[26px] border p-5 shadow-[0_18px_40px_-36px_rgba(15,23,42,0.28)] ${accent.panel} xl:h-full`}
+                >
+                  <div className={`rounded-[18px] p-3 ${accent.icon}`}>
+                    {opportunity.accent === "amber" ? (
+                      <Sparkles className="size-5" />
+                    ) : opportunity.accent === "blue" ? (
+                      <Zap className="size-5" />
+                    ) : (
+                      <TrendingUp className="size-5" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p
+                      className={`text-xs font-semibold uppercase tracking-[0.22em] ${accent.eyebrow}`}
+                    >
+                      {opportunity.stat}
+                    </p>
+                    <h3 className="mt-2 text-base font-semibold text-slate-950">
+                      {opportunity.title}
+                    </h3>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">
+                      {opportunity.description}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
         </section>
       </AppShell>
 

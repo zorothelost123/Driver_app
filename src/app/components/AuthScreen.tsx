@@ -1,22 +1,26 @@
 import { ArrowRight, ShieldCheck, Smartphone, Star } from "lucide-react";
 import { motion } from "motion/react";
-import { demoDrivers } from "../lib/demo-data";
 import { useDemoAppContext } from "../context/DemoAppContext";
+import { demoDrivers } from "../lib/demo-data";
 import { formatCurrency } from "../lib/formatters";
-import { brandGradientClassName, softCardClassName, surfaceCardClassName } from "../lib/ui";
+import {
+  brandGradientClassName,
+  softCardClassName,
+  surfaceCardClassName,
+} from "../lib/ui";
 
 export function AuthScreen() {
   const { activeDriverId, signInAsDriver } = useDemoAppContext();
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#0f172a] px-4 py-8 text-white">
+    <div className="relative min-h-screen overflow-hidden bg-[#0f172a] px-4 py-8 text-white lg:px-8 lg:py-10">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.25),_transparent_38%),linear-gradient(180deg,#0f172a_0%,#111827_42%,#172554_100%)]" />
-      <div className="relative mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-md flex-col justify-between">
-        <div>
+      <div className="relative mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-md flex-col justify-between lg:max-w-6xl">
+        <div className="lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:gap-6">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`rounded-[30px] p-6 shadow-[0_28px_80px_-40px_rgba(14,165,233,0.6)] ${brandGradientClassName}`}
+            className={`rounded-[30px] p-6 shadow-[0_28px_80px_-40px_rgba(14,165,233,0.6)] lg:p-8 ${brandGradientClassName}`}
           >
             <div className="mb-6 flex items-center justify-between">
               <div className="rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white/80">
@@ -26,19 +30,21 @@ export function AuthScreen() {
                 <ShieldCheck className="size-5 text-white" />
               </div>
             </div>
-            <h1 className="text-3xl font-semibold leading-tight text-white">
+            <h1 className="text-3xl font-semibold leading-tight text-white lg:max-w-[14ch] lg:text-[44px]">
               Drive smarter with SURG guidance built in.
             </h1>
-            <p className="mt-3 max-w-[26ch] text-sm leading-6 text-white/80">
+            <p className="mt-3 max-w-[26ch] text-sm leading-6 text-white/80 lg:max-w-[34ch] lg:text-base">
               Choose a demo driver profile and continue into the mobile driver
               assistant experience.
             </p>
-            <div className="mt-8 grid grid-cols-2 gap-3">
+            <div className="mt-8 grid grid-cols-2 gap-3 lg:mt-10">
               <div className="rounded-[22px] border border-white/15 bg-white/10 p-4">
                 <p className="text-xs uppercase tracking-[0.18em] text-white/60">
                   Wallet
                 </p>
-                <p className="mt-2 text-lg font-semibold">{formatCurrency(1245)}</p>
+                <p className="mt-2 text-lg font-semibold">
+                  {formatCurrency(1245)}
+                </p>
               </div>
               <div className="rounded-[22px] border border-white/15 bg-white/10 p-4">
                 <p className="text-xs uppercase tracking-[0.18em] text-white/60">
@@ -53,7 +59,7 @@ export function AuthScreen() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className={`mt-5 p-5 ${surfaceCardClassName}`}
+            className={`mt-5 p-5 lg:mt-0 lg:self-start lg:p-6 ${surfaceCardClassName}`}
           >
             <div className="mb-4 flex items-center justify-between">
               <div>
@@ -106,14 +112,16 @@ export function AuthScreen() {
                             {driver.name}
                           </h3>
                           <p className="mt-1 text-sm text-slate-500">
-                            {driver.city} • {driver.vehicle}
+                            {driver.city} | {driver.vehicle}
                           </p>
                           <div className="mt-3 flex items-center gap-3 text-xs text-slate-500">
                             <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1">
                               <Star className="size-3.5 fill-amber-400 text-amber-400" />
                               {driver.rating}
                             </span>
-                            <span>{driver.trips.toLocaleString("en-IN")} trips</span>
+                            <span>
+                              {driver.trips.toLocaleString("en-IN")} trips
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -126,7 +134,7 @@ export function AuthScreen() {
           </motion.div>
         </div>
 
-        <div className={`mt-6 p-5 ${softCardClassName}`}>
+        <div className={`mt-6 p-5 lg:mt-8 lg:max-w-xl ${softCardClassName}`}>
           <p className="text-sm font-medium text-slate-900">
             Demo state is saved in localStorage.
           </p>

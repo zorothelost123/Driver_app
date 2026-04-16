@@ -18,15 +18,15 @@ export function LoadingScreen({
       aria-live="polite"
       className={
         overlay
-          ? "fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/35 px-6 backdrop-blur-xl"
-          : "flex min-h-screen items-center justify-center bg-[#f4f7fb] px-6"
+          ? "fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/35 px-6 backdrop-blur-xl lg:px-8"
+          : "flex min-h-screen items-center justify-center bg-[#f4f7fb] px-6 lg:px-8"
       }
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.96, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
-        className={`w-full max-w-sm p-6 ${surfaceCardClassName}`}
+        className={`w-full max-w-sm p-6 lg:max-w-lg ${surfaceCardClassName}`}
       >
         <div className="flex items-start justify-between gap-4">
           <div className="rounded-[22px] bg-slate-950 p-4 text-white shadow-[0_22px_45px_-28px_rgba(15,23,42,0.8)]">

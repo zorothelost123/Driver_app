@@ -59,7 +59,7 @@ export function InboxPage() {
     <AppShell
       header={
         <div className={`${surfaceCardClassName} overflow-hidden`}>
-          <div className="rounded-[30px] bg-white p-6">
+          <div className="rounded-[30px] bg-white p-6 lg:p-8">
             <div className="flex items-start gap-3">
               <button
                 onClick={() => navigate("/")}
@@ -72,10 +72,10 @@ export function InboxPage() {
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
                   Inbox
                 </p>
-                <h1 className="mt-2 text-[28px] font-semibold leading-tight text-slate-950">
+                <h1 className="mt-2 text-[28px] font-semibold leading-tight text-slate-950 lg:text-[38px]">
                   Driver messages
                 </h1>
-                <p className="mt-2 text-sm leading-6 text-slate-500">
+                <p className="mt-2 text-sm leading-6 text-slate-500 lg:max-w-2xl lg:text-base">
                   Alerts, promotions, and SURG updates all stay here.
                 </p>
               </div>
@@ -89,7 +89,7 @@ export function InboxPage() {
       contentClassName="space-y-4"
     >
       <section className={`${surfaceCardClassName} p-4`}>
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="grid grid-cols-2 gap-2 rounded-[22px] bg-slate-100/80 p-1.5">
             {filters.map((item) => {
               const isActive = item.id === filter;
@@ -119,7 +119,7 @@ export function InboxPage() {
       </section>
 
       {visibleMessages.length > 0 ? (
-        <section className="space-y-3">
+        <section className="grid gap-3 xl:grid-cols-2">
           {visibleMessages.map((message, index) => {
             const Icon = getIcon(message.type);
 
@@ -165,7 +165,9 @@ export function InboxPage() {
           })}
         </section>
       ) : (
-        <section className={`${surfaceCardClassName} px-6 py-12 text-center`}>
+        <section
+          className={`${surfaceCardClassName} px-6 py-12 text-center lg:mx-auto lg:max-w-3xl`}
+        >
           <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-slate-100 text-slate-500">
             <Mail className="size-7" />
           </div>

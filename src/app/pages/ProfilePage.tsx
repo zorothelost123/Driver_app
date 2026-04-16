@@ -56,6 +56,7 @@ export function ProfilePage() {
   const menuSections = [
     {
       title: "Manage",
+      subtitle: "Vehicle and compliance",
       items: [
         {
           icon: Car,
@@ -87,6 +88,7 @@ export function ProfilePage() {
     },
     {
       title: "Money",
+      subtitle: "Wallet, payouts, and tax",
       items: [
         {
           icon: Wallet,
@@ -110,6 +112,7 @@ export function ProfilePage() {
     },
     {
       title: "Resources",
+      subtitle: "Learn and app info",
       items: [
         {
           icon: BookOpen,
@@ -132,7 +135,7 @@ export function ProfilePage() {
       header={
         <div className={`${surfaceCardClassName} overflow-hidden`}>
           <div
-            className={`relative overflow-hidden rounded-[30px] p-6 text-white ${brandGradientClassName}`}
+            className={`relative overflow-hidden rounded-[30px] p-6 text-white lg:p-8 ${brandGradientClassName}`}
           >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.22),_transparent_34%)]" />
             <div className="absolute -right-12 bottom-0 size-36 rounded-full bg-white/10 blur-3xl" />
@@ -149,10 +152,10 @@ export function ProfilePage() {
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/65">
                   Driver profile
                 </p>
-                <h1 className="mt-2 text-[28px] font-semibold leading-tight">
+                <h1 className="mt-2 text-[28px] font-semibold leading-tight lg:text-[38px]">
                   Account and driver tools
                 </h1>
-                <p className="mt-2 text-sm leading-6 text-white/80">
+                <p className="mt-2 text-sm leading-6 text-white/80 lg:max-w-2xl lg:text-base">
                   Keep profile, payouts, documents, and support tools within
                   easy reach.
                 </p>
@@ -161,12 +164,12 @@ export function ProfilePage() {
           </div>
         </div>
       }
-      contentClassName="space-y-4"
+      contentClassName="space-y-4 lg:grid lg:grid-cols-12 lg:gap-6 lg:space-y-0"
     >
       <motion.section
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`${surfaceCardClassName} p-5`}
+        className={`${surfaceCardClassName} p-5 lg:col-span-5`}
       >
         <div className="flex items-start gap-4">
           <div className="relative">
@@ -186,13 +189,13 @@ export function ProfilePage() {
           </div>
 
           <div className="flex-1">
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h2 className="text-2xl font-semibold text-slate-950">
                   {activeDriver.name}
                 </h2>
                 <p className="mt-1 text-sm text-slate-500">
-                  {activeDriver.phone} • {activeDriver.city}
+                  {activeDriver.phone} | {activeDriver.city}
                 </p>
                 <p className="mt-2 text-sm font-medium text-slate-600">
                   {activeDriver.vehicle}
@@ -234,7 +237,7 @@ export function ProfilePage() {
         </div>
       </motion.section>
 
-      <section className="space-y-3">
+      <section className="space-y-3 lg:col-span-7">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
             Quick actions
@@ -243,7 +246,7 @@ export function ProfilePage() {
             Common driver tools
           </h2>
         </div>
-        <div className="grid gap-3">
+        <div className="grid gap-3 md:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
           {quickActions.map((action, index) => {
             const Icon = action.icon;
 
@@ -262,7 +265,9 @@ export function ProfilePage() {
                   <h3 className="text-sm font-semibold text-slate-950">
                     {action.title}
                   </h3>
-                  <p className="mt-1 text-sm text-slate-500">{action.subtitle}</p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    {action.subtitle}
+                  </p>
                 </div>
                 <ChevronRight className="size-5 text-slate-400" />
               </motion.button>
@@ -272,17 +277,13 @@ export function ProfilePage() {
       </section>
 
       {menuSections.map((section, sectionIndex) => (
-        <section key={section.title} className="space-y-3">
+        <section key={section.title} className="space-y-3 lg:col-span-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
               {section.title}
             </p>
             <h2 className="mt-1 text-lg font-semibold text-slate-950">
-              {section.title === "Manage"
-                ? "Vehicle and compliance"
-                : section.title === "Money"
-                  ? "Wallet, payouts, and tax"
-                  : "Learn and app info"}
+              {section.subtitle}
             </h2>
           </div>
 
@@ -322,7 +323,7 @@ export function ProfilePage() {
         </section>
       ))}
 
-      <section className="grid gap-3 pb-2">
+      <section className="grid gap-3 pb-2 lg:col-span-12 lg:grid-cols-[1fr_1fr_auto] lg:items-center">
         <button
           onClick={signOut}
           className={`${surfaceCardClassName} flex items-center justify-center gap-2 p-4 text-sm font-semibold text-slate-950 transition hover:-translate-y-0.5`}
@@ -337,8 +338,8 @@ export function ProfilePage() {
           <LogOut className="size-4" />
           Logout
         </button>
-        <p className="pt-2 text-center text-xs text-slate-400">
-          Driver App v3.2.1 • Demo profile state is stored locally
+        <p className="pt-2 text-center text-xs text-slate-400 lg:pt-0 lg:text-right">
+          Driver App v3.2.1 | Demo profile state is stored locally
         </p>
       </section>
     </AppShell>

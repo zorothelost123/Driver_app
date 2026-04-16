@@ -65,13 +65,13 @@ export function QuickSettings({ isOpen, onClose }: QuickSettingsProps) {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 26, stiffness: 280 }}
-            className="fixed inset-x-0 bottom-0 z-[61] px-4 pb-[calc(1rem+env(safe-area-inset-bottom))]"
+            className="fixed inset-x-0 bottom-0 z-[61] px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] lg:flex lg:min-h-full lg:items-center lg:justify-center lg:px-8 lg:pb-0"
           >
             <div
               role="dialog"
               aria-modal="true"
               aria-label="Quick settings"
-              className={`mx-auto w-full max-w-md p-6 ${softCardClassName}`}
+              className={`mx-auto w-full max-w-md p-6 lg:max-w-2xl ${softCardClassName}`}
             >
               <div className="mb-6 flex items-center justify-between">
                 <div>
@@ -91,7 +91,7 @@ export function QuickSettings({ isOpen, onClose }: QuickSettingsProps) {
                 </button>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-3 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0">
                 {settingsList.map((item) => {
                   const Icon = item.icon;
                   const isEnabled = quickSettings[item.key];
