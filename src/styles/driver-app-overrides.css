@@ -1,0 +1,172 @@
+.driver-app-shell,
+.driver-app-shell-main,
+.driver-app-home-content,
+.driver-app-home-content > *,
+.driver-app-ride-panel,
+.driver-app-ride-panel > * {
+  min-width: 0;
+}
+
+.driver-app-shell {
+  overflow-x: hidden;
+}
+
+.driver-app-home-header-actions,
+.driver-app-home-map-actions {
+  flex-shrink: 0;
+}
+
+.driver-app-home-content h1,
+.driver-app-home-content h2,
+.driver-app-home-content h3,
+.driver-app-home-content p,
+.driver-app-ride-panel h2,
+.driver-app-ride-panel h3,
+.driver-app-ride-panel p {
+  overflow-wrap: anywhere;
+}
+
+.driver-app-home-summary-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.driver-app-surg-content,
+.driver-app-surg-content > * {
+  min-width: 0;
+}
+
+.driver-app-surg-content h1,
+.driver-app-surg-content h2,
+.driver-app-surg-content h3,
+.driver-app-surg-content p {
+  overflow-wrap: anywhere;
+}
+
+.driver-app-home-required-badge {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  min-width: 5.75rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.driver-app-surg-score-box {
+  display: grid;
+  flex-shrink: 0;
+  gap: 0.25rem;
+  justify-items: center;
+  min-width: 4.75rem;
+  text-align: center;
+}
+
+.driver-app-surg-score-label {
+  overflow-wrap: normal;
+  white-space: nowrap;
+  word-break: normal;
+}
+
+.driver-app-surg-score-value {
+  line-height: 1;
+}
+
+@media (max-width: 480px) {
+  .driver-app-home-header-inner,
+  .driver-app-home-map-top,
+  .driver-app-home-status-row,
+  .driver-app-home-opportunity-toolbar,
+  .driver-app-home-playbook-toolbar,
+  .driver-app-ride-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .driver-app-home-header-actions {
+    align-self: flex-end;
+  }
+
+  .driver-app-home-map-actions {
+    align-self: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .driver-app-home-summary-grid,
+  .driver-app-ride-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .driver-app-home-required-badge {
+    align-self: flex-start;
+  }
+
+  .driver-app-surg-hero {
+    padding: 1.25rem;
+  }
+
+  .driver-app-surg-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .driver-app-surg-traffic-row {
+    align-items: flex-start;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .driver-app-surg-map {
+    height: 26rem;
+    padding: 0.875rem;
+  }
+
+  .driver-app-surg-map-status {
+    display: none;
+  }
+
+  .driver-app-surg-map-info {
+    left: 0.875rem;
+    max-width: none;
+    padding: 0.875rem;
+    right: 0.875rem;
+    top: 0.875rem;
+  }
+
+  .driver-app-surg-map-zone {
+    bottom: 0.875rem;
+    left: 0.875rem;
+    max-width: calc(100% - 10rem);
+    padding: 0.75rem 0.875rem;
+  }
+
+  .driver-app-surg-map-legend {
+    bottom: 0.875rem;
+    padding: 0.75rem;
+    right: 0.875rem;
+  }
+
+  .driver-app-surg-tab-grid {
+    gap: 0.625rem;
+  }
+
+  .driver-app-surg-tab {
+    min-height: 88px;
+    padding: 0.875rem;
+  }
+
+  .driver-app-surg-tab-inner {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .driver-app-surg-tab-icon {
+    align-self: flex-end;
+    padding: 0.625rem;
+  }
+
+  .driver-app-surg-score-box {
+    min-width: 4.25rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
