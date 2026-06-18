@@ -10,6 +10,7 @@ import {
 import { motion } from "motion/react";
 import { useNavigate } from "react-router";
 import { AppShell } from "../components/AppShell";
+import { RideAssistantPanel } from "../components/RideAssistantPanel";
 import { useDemoAppContext } from "../context/DemoAppContext";
 import {
   earningsSummaries,
@@ -27,9 +28,20 @@ const periodLabels = {
 
 export function EarningsPage() {
   const navigate = useNavigate();
-  const { earningsPeriod, setEarningsPeriod } = useDemoAppContext();
+  const {
+    earningsPeriod,
+    setEarningsPeriod,
+    currentRideRequest,
+    activeTrip,
+    sessionMetrics,
+    sessionTrips,
+  } = useDemoAppContext();
 
   const summary = earningsSummaries[earningsPeriod];
+  const totalTrips = summary.trips + sessionMetrics.todayTrips;
+  const totalEarnings = summary.total + sessionMetrics.todayEarnings;
+  const averagePerTrip = totalTrips > 0 ? Math.round(totalEarnings / totalTrips) : 0;
+  const visibleTrips = [...sessionTrips, ...recentTrips].slice(0, 6);
   const maxAmount = Math.max(...weeklyEarnings.map((entry) => entry.amount));
 
   return (
@@ -80,7 +92,7 @@ export function EarningsPage() {
                 {periodLabels[earningsPeriod]}
               </p>
               <h2 className="mt-3 text-4xl font-semibold">
-                {formatCurrency(summary.total)}
+                {formatCurrency(totalEarnings)}
               </h2>
               <p className="mt-2 text-sm text-white/80">
                 {summary.trend} compared with the previous period
@@ -96,7 +108,7 @@ export function EarningsPage() {
               <p className="text-xs uppercase tracking-[0.2em] text-white/60">
                 Trips
               </p>
-              <p className="mt-2 text-lg font-semibold">{summary.trips}</p>
+              <p className="mt-2 text-lg font-semibold">{totalTrips}</p>
             </div>
             <div className="rounded-[22px] border border-white/15 bg-white/10 p-4">
               <p className="text-xs uppercase tracking-[0.2em] text-white/60">
@@ -111,7 +123,7 @@ export function EarningsPage() {
                 Avg / trip
               </p>
               <p className="mt-2 text-lg font-semibold">
-                {formatCurrency(summary.perTrip)}
+                {formatCurrency(averagePerTrip)}
               </p>
             </div>
           </div>
@@ -196,7 +208,7 @@ export function EarningsPage() {
                     Today
                   </p>
                   <p className="mt-1 text-xl font-semibold text-slate-950">
-                    {formatCurrency(summary.today)}
+                    {formatCurrency(sessionMetrics.todayEarnings)}
                   </p>
                 </div>
               </div>
@@ -242,6 +254,10 @@ export function EarningsPage() {
         </section>
       </div>
 
+      {currentRideRequest || activeTrip ? (
+        <RideAssistantPanel className="lg:col-span-12" />
+      ) : null}
+
       <section className={`${surfaceCardClassName} p-5 lg:col-span-12`}>
         <div className="flex items-center justify-between">
           <div>
@@ -258,7 +274,7 @@ export function EarningsPage() {
         </div>
 
         <div className="mt-4 grid gap-3 xl:grid-cols-2">
-          {recentTrips.map((trip, index) => (
+          {visibleTrips.map((trip, index) => (
             <motion.article
               key={trip.id}
               initial={{ opacity: 0, y: 18 }}

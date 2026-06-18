@@ -15,11 +15,13 @@ import { useNavigate } from "react-router";
 import { AppShell } from "../components/AppShell";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { QuickSettings } from "../components/QuickSettings";
+import { RideAssistantPanel } from "../components/RideAssistantPanel";
+import { ShiftPlanningToggle } from "../components/ShiftPlanningToggle";
+import { WorkspaceZonePanel } from "../components/WorkspaceZonePanel";
 import { Switch } from "../components/ui/switch";
 import { useDemoAppContext } from "../context/DemoAppContext";
 import {
-  demandZones,
-  homeOpportunities,
+  getCityDemandProfile,
   homeRequiredActions,
 } from "../lib/demo-data";
 import { formatCurrency, getFirstName, getGreeting } from "../lib/formatters";
@@ -49,21 +51,66 @@ const opportunityAccentMap = {
 
 export function HomePage() {
   const navigate = useNavigate();
-  const { activeDriver, isOnline, setIsOnline, unreadCount, avoidTrafficMode } =
-    useDemoAppContext();
+  const {
+    activeDriver,
+    operatingCity,
+    currentWorkspaceZone,
+    locationPermission,
+    isOnline,
+    canGoOffline,
+    setIsOnline,
+    shiftPlanningMode,
+    setShiftPlanningMode,
+    unreadCount,
+    avoidTrafficMode,
+    currentRideRequest,
+    activeTrip,
+    sessionMetrics,
+  } = useDemoAppContext();
   const [showLoading, setShowLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const timeoutRef = useRef<number | null>(null);
 
   const greeting = getGreeting();
   const firstName = getFirstName(activeDriver.name);
-  const topZone = demandZones[0];
+  const cityProfile = getCityDemandProfile(operatingCity);
+  const demandZones = cityProfile.zones;
+  const homeOpportunities = cityProfile.opportunities;
+  const activeShiftPlan =
+    cityProfile.shiftPlans.find((plan) => plan.id === shiftPlanningMode) ??
+    cityProfile.shiftPlans[0];
+  const shiftPeakWindows = cityProfile.peakWindows.filter((window) =>
+    window.shiftModes.includes(shiftPlanningMode),
+  );
+  const shiftOpportunities = homeOpportunities.filter((opportunity) =>
+    opportunity.shiftModes.includes(shiftPlanningMode),
+  );
+  const displayPeakWindows =
+    shiftPeakWindows.length > 0 ? shiftPeakWindows : cityProfile.peakWindows;
+  const displayOpportunities =
+    shiftOpportunities.length > 0 ? shiftOpportunities : homeOpportunities;
+  const topZone =
+    demandZones.find((zone) =>
+      activeShiftPlan.focusZoneIds.includes(zone.id),
+    ) ?? demandZones[0];
   const todaySummary = isOnline
     ? {
-        earnings: 640,
-        trips: 4,
-        onlineTime: "1h 42m",
-        insight: "Strong momentum this hour",
+        earnings: sessionMetrics.todayEarnings,
+        trips: sessionMetrics.todayTrips,
+        onlineTime: activeTrip
+          ? "2h 05m"
+          : currentRideRequest
+            ? "0h 24m"
+            : sessionMetrics.todayTrips > 0
+              ? "1h 42m"
+              : "0h 18m",
+        insight: activeTrip
+          ? "Trip in progress"
+          : currentRideRequest
+            ? "New request waiting"
+            : sessionMetrics.todayTrips > 0
+              ? "Momentum building this shift"
+              : "Ride radar is active",
       }
     : {
         earnings: 0,
@@ -122,7 +169,7 @@ export function HomePage() {
                     {greeting}, {firstName}
                   </h1>
                   <p className="mt-2 text-sm leading-6 text-white/80 lg:max-w-2xl lg:text-base">
-                    {activeDriver.city} shift guide with SURG-backed hotspot
+                    {operatingCity} shift guide with SURG-backed hotspot
                     recommendations.
                   </p>
                 </div>
@@ -176,11 +223,17 @@ export function HomePage() {
                     </span>
                     <Switch
                       checked={isOnline}
+                      disabled={!canGoOffline && isOnline}
                       onCheckedChange={handleToggle}
                       className="data-[state=checked]:bg-emerald-500"
                     />
                   </div>
                 </div>
+                {!canGoOffline && isOnline ? (
+                  <p className="text-xs font-medium text-white/75">
+                    Complete the active trip before going offline.
+                  </p>
+                ) : null}
               </div>
             </div>
           </div>
@@ -190,9 +243,14 @@ export function HomePage() {
         <motion.section
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`${surfaceCardClassName} overflow-hidden p-3 lg:col-span-8 lg:p-4`}
+          className={`${surfaceCardClassName} overflow-hidden p-3 lg:col-span-8 lg:self-start lg:p-4`}
         >
-          <div className="relative h-[300px] overflow-hidden rounded-[24px] bg-[linear-gradient(180deg,#eef5ff_0%,#dff4f0_100%)] p-4 lg:h-[430px] lg:p-5 xl:h-[470px]">
+          <motion.div
+            key={`${operatingCity}-${currentWorkspaceZone.id}-${locationPermission}-${shiftPlanningMode}`}
+            initial={{ opacity: 0, scale: 0.985 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="relative h-[300px] overflow-hidden rounded-[24px] bg-[linear-gradient(180deg,#eef5ff_0%,#dff4f0_100%)] p-4 lg:h-[430px] lg:p-5 xl:h-[470px]"
+          >
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_28%,_rgba(59,130,246,0.12),_transparent_24%),radial-gradient(circle_at_78%_72%,_rgba(16,185,129,0.14),_transparent_26%)]" />
             <div className="absolute inset-x-8 top-[28%] h-px bg-slate-300/80" />
             <div className="absolute inset-x-12 top-[58%] h-px bg-slate-300/65" />
@@ -228,6 +286,38 @@ export function HomePage() {
               </div>
             ))}
 
+            <svg
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              className="pointer-events-none absolute inset-0 h-full w-full"
+            >
+              <motion.path
+                key={`${operatingCity}-${shiftPlanningMode}-primary`}
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 1.1 }}
+                d={activeShiftPlan.routePath}
+                stroke="#0f172a"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                fill="none"
+              />
+              {avoidTrafficMode ? (
+                <motion.path
+                  key={`${operatingCity}-${shiftPlanningMode}-alternate`}
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={{ pathLength: 1, opacity: 1 }}
+                  transition={{ duration: 1.25, delay: 0.08 }}
+                  d={activeShiftPlan.alternatePath}
+                  stroke="#10b981"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  fill="none"
+                  strokeDasharray="5 8"
+                />
+              ) : null}
+            </svg>
+
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
               <motion.div
                 animate={{ scale: [1, 1.35, 1], opacity: [0.4, 0, 0.4] }}
@@ -242,17 +332,27 @@ export function HomePage() {
             <div className="relative flex items-start justify-between gap-3">
               <div className="rounded-[18px] border border-white/80 bg-white/85 px-4 py-3 shadow-sm backdrop-blur lg:max-w-sm lg:px-5 lg:py-4">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500">
-                  Live location
+                  {locationPermission === "granted"
+                    ? "Workspace synced"
+                    : "Location setup needed"}
                 </p>
                 <p className="mt-1 text-base font-semibold text-slate-950">
-                  Near Brodipet Circle
+                  {currentWorkspaceZone.name}
                 </p>
                 <p className="mt-1 text-sm text-slate-500">
-                  {topZone.distanceKm} km from the strongest SURG zone
+                  {locationPermission === "granted"
+                    ? `${currentWorkspaceZone.landmark} is active for nearby booking signals.`
+                    : "Allow location to start receiving customer bookings around this work zone."}
+                </p>
+                <p className="mt-2 text-xs font-medium uppercase tracking-[0.18em] text-sky-700">
+                  {activeShiftPlan.label} | {activeShiftPlan.timeRange}
                 </p>
               </div>
 
               <div className="flex flex-col gap-2">
+                <div className="rounded-full border border-white/80 bg-white/85 px-3 py-2 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-600 shadow-sm backdrop-blur">
+                  {operatingCity}
+                </div>
                 {[
                   {
                     icon: LocateFixed,
@@ -299,6 +399,12 @@ export function HomePage() {
                     {formatCurrency(topZone.earningsPerHour)} per hour and{" "}
                     {topZone.waitTimeLabel}
                   </p>
+                  <p className="mt-2 text-xs font-medium uppercase tracking-[0.18em] text-sky-700">
+                    Best work-zone window: {currentWorkspaceZone.bestWindow}
+                  </p>
+                  <p className="mt-2 text-sm text-slate-500">
+                    {activeShiftPlan.actionLabel}
+                  </p>
                 </div>
                 <button
                   onClick={() => navigate("/surg")}
@@ -308,10 +414,12 @@ export function HomePage() {
                 </button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </motion.section>
 
-        <div className="grid gap-4 lg:col-span-4 lg:content-start">
+        <div className="grid gap-4 lg:col-span-4 lg:content-start lg:self-start">
+          <RideAssistantPanel />
+
           <motion.section
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -389,6 +497,11 @@ export function HomePage() {
           </motion.section>
         </div>
 
+        <WorkspaceZonePanel
+          layout="wide"
+          className="lg:col-span-12 lg:self-start"
+        />
+
         <motion.button
           whileTap={{ scale: 0.99 }}
           onClick={() => navigate("/surg")}
@@ -416,25 +529,34 @@ export function HomePage() {
         </motion.button>
 
         <section className="space-y-3 lg:col-span-7 xl:col-span-8">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
                 Opportunities
               </p>
               <h2 className="mt-1 text-lg font-semibold text-slate-950">
-                High-value boosts for this shift
+                High-value boosts for the {shiftPlanningMode} peak
               </h2>
+              <p className="mt-2 text-sm leading-6 text-slate-500">
+                {activeShiftPlan.summary}
+              </p>
             </div>
-            <button
-              onClick={() => navigate("/earnings")}
-              className="text-sm font-semibold text-sky-700"
-            >
-              View earnings
-            </button>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <ShiftPlanningToggle
+                value={shiftPlanningMode}
+                onChange={setShiftPlanningMode}
+              />
+              <button
+                onClick={() => navigate("/earnings")}
+                className="text-sm font-semibold text-sky-700"
+              >
+                View earnings
+              </button>
+            </div>
           </div>
 
           <div className="grid gap-3 xl:grid-cols-3">
-            {homeOpportunities.map((opportunity, index) => {
+            {displayOpportunities.map((opportunity, index) => {
               const accent = opportunityAccentMap[opportunity.accent];
 
               return (
@@ -470,6 +592,69 @@ export function HomePage() {
                 </motion.div>
               );
             })}
+          </div>
+        </section>
+
+        <section className={`${surfaceCardClassName} p-5 lg:col-span-12`}>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">
+                Peak hour playbook
+              </p>
+              <h2 className="mt-1 text-lg font-semibold text-slate-950">
+                Where drivers should position in {operatingCity}
+              </h2>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">
+                {activeShiftPlan.corridorLabel}
+              </div>
+              <button
+                onClick={() => navigate("/surg")}
+                className="text-sm font-semibold text-sky-700"
+              >
+                Open SURG guide
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-4 grid gap-3 xl:grid-cols-3">
+            {displayPeakWindows.map((window, index) => (
+              <motion.article
+                key={`${operatingCity}-${window.id}`}
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.18 + index * 0.05 }}
+                className="rounded-[24px] border border-slate-200 bg-slate-50/80 p-4"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">
+                      {window.label}
+                    </p>
+                    <h3 className="mt-2 text-base font-semibold text-slate-950">
+                      {window.timeRange}
+                    </h3>
+                  </div>
+                  <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    {window.demandTone}
+                  </span>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-slate-500">
+                  {window.insight}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {window.hotspots.map((hotspot) => (
+                    <span
+                      key={hotspot}
+                      className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm"
+                    >
+                      {hotspot}
+                    </span>
+                  ))}
+                </div>
+              </motion.article>
+            ))}
           </div>
         </section>
       </AppShell>
